@@ -1,5 +1,5 @@
-use super::MemoryLayout;
-use crate::ui::components::Button;
+use super::{CpuLayout, MemoryLayout};
+use crate::state::MonitorWidgets;
 use gtk::prelude::*;
 use gtk::{Box, Orientation};
 
@@ -8,7 +8,7 @@ pub struct InnerLayout {
 }
 
 impl InnerLayout {
-    pub fn new() -> Self {
+    pub fn new(monitor_widget: &MonitorWidgets) -> Self {
         let widget = Box::builder()
             .orientation(Orientation::Horizontal)
             .spacing(15)
@@ -16,12 +16,12 @@ impl InnerLayout {
 
         widget.set_height_request(250);
 
-        let button2 = Button::new("Button 2");
-        button2.set_hexpand(true);
+        let memory_layout = MemoryLayout::new(monitor_widget);
+        let cpu_layout = CpuLayout::new(monitor_widget);
 
-        let memory_layout = MemoryLayout::new();
+        // monitor_widget.memory_progress.set_fraction(0.75);
 
-        widget.append(button2.widget());
+        widget.append(cpu_layout.widget());
         widget.append(memory_layout.widget());
 
         Self { widget }

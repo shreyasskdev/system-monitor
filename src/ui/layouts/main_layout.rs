@@ -1,4 +1,5 @@
-use super::{InnerLayout, MemoryLayout};
+use super::InnerLayout;
+use crate::state::MonitorWidgets;
 use crate::ui::components::Button;
 use gtk::prelude::*;
 use gtk::{Box, Orientation};
@@ -8,7 +9,7 @@ pub struct MainLayout {
 }
 
 impl MainLayout {
-    pub fn new() -> Self {
+    pub fn new(monitor_widget: &MonitorWidgets) -> Self {
         let widget = Box::builder()
             .orientation(Orientation::Vertical)
             .spacing(15)
@@ -18,7 +19,7 @@ impl MainLayout {
             .margin_end(15)
             .build();
 
-        let inner_layout = InnerLayout::new();
+        let inner_layout = InnerLayout::new(monitor_widget);
         let button1 = Button::new("Button 1");
         button1.set_vexpand(true);
 

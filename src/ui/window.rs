@@ -1,18 +1,27 @@
 use super::layouts::MainLayout;
 use crate::styles;
-use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow};
+use gtk::{prelude::WidgetExt, Application, ApplicationWindow};
 
-pub fn build_ui(app: &Application) {
-    styles::load_css();
+use crate::state::{MonitorWidgets, SystemMetrics};
 
-    let main_layout = MainLayout::new();
+pub struct MainWindow {
+    window: ApplicationWindow,
+}
 
-    let window = ApplicationWindow::builder()
-        .title("UI demo")
-        .application(app)
-        .child(main_layout.widget())
-        .build();
+impl MainWindow {
+    pub fn new(app: &Application, monitor_widget: &MonitorWidgets) -> Self {
+        styles::load_css();
 
-    window.show();
+        let main_layout = MainLayout::new(monitor_widget);
+
+        let window = ApplicationWindow::builder()
+            .title("System Monitor")
+            .application(app)
+            .child(main_layout.widget())
+            .build();
+
+        window.show();
+
+        Self { window }
+    }
 }

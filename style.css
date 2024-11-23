@@ -1,3 +1,16 @@
 .box {
-    background-color: red;
+    background-color: var(--primary-color);
+}
+
+.section_head {
+    padding: 12px 0;
+    /* margin: 5px; */
+}
+
+progressbar {
+    padding-top: 10px;
+}
+
+label {
+    padding: 5px 10px;
 }

@@ -1,0 +1,56 @@
+/* Root styles */
+:root {
+    --primary-color: #2e253e;
+    --secondary-color: #4e445e;
+    --background-color: #0d0a12;
+    --text-color: #e8e6ec;
+    --border-color: #6b637a;
+}
+
+/* General app background and text */
+window {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: "Arial", sans-serif;
+    font-size: 14px;
+}
+
+/* Buttons */
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: 1px solid var(--primary-color);
+    padding: 6px 12px;
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* Entries (text inputs) */
+entry {
+    background-color: white;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 5px;
+}
+
+entry:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px var(--primary-color);
+}
+
+/* Separators */
+separator {
+    background-color: var(--border-color);
+    margin: 0 10px;
+}
+
+progressbar progress {
+    background-color: var(--border-color);
+}
+
+* {
+    border-radius: 15px;
+}
