@@ -6,3 +6,12 @@ edition = "2021"
 [dependencies]
 gtk = {version = "*", package = "gtk4"}
 # gdk = "*"
+
+
+# [package]
+# name = "gtk-demo"
+# version = "0.1.0"
+# edition = "2021"
+
+# [dependencies]
+# gtk = { version = "0.7", package = "gtk4" }
