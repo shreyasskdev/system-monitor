@@ -13,6 +13,9 @@ use std::thread;
 use std::time::Duration;
 use sysinfo::System;
 
+use std::cell::RefCell;
+use std::rc::Rc;
+
 use crate::state::{MonitorWidgets, SystemMetrics};
 
 fn main() {
@@ -44,9 +47,10 @@ fn main() {
         let state_clone = Arc::clone(&state);
         glib::timeout_add_local(Duration::from_millis(1000), move || {
             if let Ok(state) = state_clone.lock() {
-                monitor_widget
-                    .memory_progress
-                    .set_fraction(state.memory_usage);
+                // monitor_widget
+                //     .memory_progress
+                //     .set_fraction(state.memory_usage);
+                update_progress(&monitor_widget.memory_progress, state.memory_usage);
                 monitor_widget
                     .memory_label
                     .set_text(format!("{:.2}%", (state.memory_usage * 100.0)).as_str());
@@ -74,4 +78,37 @@ fn monitor_system(main_window: Arc<Mutex<SystemMetrics>>) {
 
         thread::sleep(Duration::new(1, 0));
     }
+}
+
+fn update_progress(progress_bar: &gtk::ProgressBar, target: f64) {
+    let start_value = progress_bar.fraction();
+    let total_distance = target - start_value;
+
+    let start_time = Rc::new(RefCell::new(None::<std::time::Instant>));
+    let progress_bar = progress_bar.clone();
+
+    const ANIMATION_DURATION_MS: u64 = 300;
+
+    glib::timeout_add_local(Duration::from_millis(16), move || {
+        let mut start_time = start_time.borrow_mut();
+
+        if start_time.is_none() {
+            *start_time = Some(std::time::Instant::now());
+        }
+
+        let elapsed = start_time.unwrap().elapsed();
+        let progress = (elapsed.as_millis() as f64 / ANIMATION_DURATION_MS as f64).min(1.0);
+
+        let cubic_progress = 1.0 - (1.0 - progress).powi(3);
+        let current = start_value + (total_distance * cubic_progress);
+
+        progress_bar.set_fraction(current);
+
+        if progress >= 1.0 {
+            progress_bar.set_fraction(target);
+            glib::ControlFlow::Break
+        } else {
+            glib::ControlFlow::Continue
+        }
+    });
 }
