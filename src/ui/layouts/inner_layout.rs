@@ -12,14 +12,14 @@ impl InnerLayout {
         let widget = Box::builder()
             .orientation(Orientation::Horizontal)
             .spacing(15)
+            .margin_start(15)
+            .margin_end(15)
             .build();
 
-        widget.set_height_request(250);
+        widget.set_height_request(200);
 
         let memory_layout = MemoryLayout::new(monitor_widget);
         let cpu_layout = CpuLayout::new(monitor_widget);
-
-        // monitor_widget.memory_progress.set_fraction(0.75);
 
         widget.append(cpu_layout.widget());
         widget.append(memory_layout.widget());

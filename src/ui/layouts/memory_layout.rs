@@ -14,7 +14,7 @@ impl MemoryLayout {
         // heading
         let heading = Label::new(Some("Memory"));
         heading.set_css_classes(&["section_head"]);
-        let separator = gtk::Separator::new(gtk::Orientation::Horizontal);
+        let separator = Separator::new(Orientation::Horizontal);
 
         // layout 1
         let layout1 = Box::builder().orientation(Orientation::Horizontal).build();

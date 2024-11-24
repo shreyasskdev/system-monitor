@@ -1,16 +1,37 @@
-.box {
-    background-color: var(--primary-color);
-}
-
-.section_head {
-    padding: 12px 0;
-    font-weight: bold;
-}
-
 progressbar {
     padding-top: 10px;
 }
-
 label {
-    padding: 5px 10px;
+    padding: 5px 0;
+}
+separator {
+    margin: 5px 0;
+}
+scrollbar slider {
+    /* background-color: alpha(red, 0.7); */
+}
+scrollbar slider:hover {
+    /* background-color: alpha(red, 0.8); */
+}
+
+listview {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+/* Custom */
+.box {
+    background-color: var(--primary-color);
+    padding: 12px;
+}
+.section_head {
+    font-weight: bold;
+}
+
+* {
+    border-radius: 40% / 20%; /* Adjust the horizontal and vertical radii */
+    padding: 10px;
+    background-color: #0078d4;
+    border: 2px solid #005fa3;
+    color: white;
 }

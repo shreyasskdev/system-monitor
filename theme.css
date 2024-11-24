@@ -44,13 +44,15 @@ entry:focus {
 /* Separators */
 separator {
     background-color: var(--border-color);
-    margin: 0 10px;
 }
 
 progressbar progress {
     background-color: var(--border-color);
 }
 
-* {
+.box {
     border-radius: 15px;
+}
+button {
+    border-radius: 0;
 }
