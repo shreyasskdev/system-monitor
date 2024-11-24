@@ -1,5 +1,5 @@
 pub struct SystemMetrics {
-    pub cpu_usage: f64,
+    pub cpu_usage: Vec<f32>,
     pub memory_usage: f64,
     // memory_used: u64,
     // memory_total: u64,
@@ -10,7 +10,7 @@ pub struct SystemMetrics {
 }
 
 pub struct MonitorWidgets {
-    pub cpu_progress: gtk::ProgressBar,
+    pub cpu_progress: Vec<gtk::ProgressBar>,
     pub cpu_label: gtk::Label,
     pub memory_progress: gtk::ProgressBar,
     pub memory_label: gtk::Label,

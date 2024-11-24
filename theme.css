@@ -11,8 +11,8 @@
 window {
     background-color: var(--background-color);
     color: var(--text-color);
-    font-family: "Arial", sans-serif;
-    font-size: 14px;
+    /* font-family: "Arial", sans-serif; */
+    /* font-size: 14px; */
 }
 
 /* Buttons */

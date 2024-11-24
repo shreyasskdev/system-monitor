@@ -16,6 +16,10 @@ impl CpuLayout {
         let separator = gtk::Separator::new(gtk::Orientation::Horizontal);
         widget.append(&separator);
 
+        for progress_bar in &monitor_widget.cpu_progress {
+            widget.append(progress_bar);
+        }
+
         widget.set_hexpand(true);
         widget.set_css_classes(&["box"]);
         Self { widget }

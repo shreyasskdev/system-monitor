@@ -4,7 +4,7 @@
 
 .section_head {
     padding: 12px 0;
-    /* margin: 5px; */
+    font-weight: bold;
 }
 
 progressbar {
