@@ -27,11 +27,3 @@ listview {
 .section_head {
     font-weight: bold;
 }
-
-* {
-    border-radius: 40% / 20%; /* Adjust the horizontal and vertical radii */
-    padding: 10px;
-    background-color: #0078d4;
-    border: 2px solid #005fa3;
-    color: white;
-}

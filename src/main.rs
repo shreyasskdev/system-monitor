@@ -11,6 +11,8 @@ use std::sync::Mutex;
 use glib;
 use std::thread;
 use std::time::Duration;
+
+use sysinfo::Pid;
 use sysinfo::System;
 
 use std::cell::RefCell;
@@ -22,6 +24,7 @@ fn main() {
     let state = Arc::new(Mutex::new(SystemMetrics {
         cpu_usage: vec![],
         memory_usage: 0.0,
+        process: vec![],
     }));
     let state_clone = Arc::clone(&state);
     init_data(state_clone);
@@ -41,6 +44,7 @@ fn main() {
             cpu_label: Label::new(Some("")),
             memory_progress: ProgressBar::new(),
             memory_label: Label::new(Some("0%")),
+            process_details: None,
         };
         if let Ok(state) = state.lock() {
             for &usage in &state.cpu_usage {
@@ -48,6 +52,63 @@ fn main() {
                 progress_bar.set_fraction(usage as f64);
 
                 monitor_widget.cpu_progress.push(progress_bar);
+            }
+
+            {
+                let store = gio::ListStore::with_type(gtk::StringObject::static_type());
+
+                for &(pid, ref name, usage, memory) in &state.process {
+                    let text = format!("{},{},{},{}", pid, name, usage, memory);
+                    store.append(&gtk::StringObject::new(&text));
+                }
+
+                let factory = gtk::SignalListItemFactory::new();
+                factory.connect_setup(move |_, list_item| {
+                    let label_pid = gtk::Label::new(None);
+                    let label_name = gtk::Label::new(None);
+                    let label_usage = gtk::Label::new(None);
+                    let label_memory = gtk::Label::new(None);
+
+                    let row_layout = gtk::Box::builder()
+                        .orientation(gtk::Orientation::Horizontal)
+                        .homogeneous(true)
+                        .build();
+                    row_layout.append(&label_pid);
+                    row_layout.append(&label_name);
+                    row_layout.append(&label_usage);
+                    row_layout.append(&label_memory);
+                    list_item.set_child(Some(&row_layout));
+                });
+                factory.connect_bind(move |_, list_item| {
+                    let string_object = list_item
+                        .item()
+                        .and_downcast::<gtk::StringObject>()
+                        .expect("The item has to be a StringObject");
+
+                    let row = list_item
+                        .child()
+                        .and_downcast::<gtk::Box>()
+                        .expect("Child must be a Box");
+
+                    let string = string_object.string();
+                    let parts: Vec<&str> = string.split(',').collect();
+
+                    let mut child = row.first_child();
+                    let mut idx = 0;
+
+                    while let Some(current_child) = child {
+                        if let Some(label) = current_child.downcast_ref::<gtk::Label>() {
+                            if idx < parts.len() {
+                                label.set_text(parts[idx]);
+                                idx += 1;
+                            }
+                        }
+
+                        child = current_child.next_sibling();
+                    }
+                });
+
+                monitor_widget.process_details = Some((store, factory));
             }
         }
 
@@ -89,9 +150,24 @@ fn monitor_system(main_window: Arc<Mutex<SystemMetrics>>) {
         // Cpu
         let cpu_usages: Vec<f32> = sys.cpus().iter().map(|cpu| cpu.cpu_usage()).collect();
 
+        // Process
+        let process_details: Vec<(Pid, String, f32, u64)> = sys
+            .processes()
+            .iter()
+            .map(|(pid, process)| {
+                (
+                    *pid,
+                    process.name().to_string_lossy().to_string(),
+                    process.cpu_usage(),
+                    process.memory(),
+                )
+            })
+            .collect();
+
         if let Ok(mut widgets) = main_window.lock() {
             widgets.memory_usage = memory_usage;
             widgets.cpu_usage = cpu_usages;
+            widgets.process = process_details;
         }
 
         thread::sleep(Duration::new(1, 0));
@@ -111,9 +187,33 @@ fn init_data(main_window: Arc<Mutex<SystemMetrics>>) {
     // Cpu
     let cpu_usages: Vec<f32> = sys.cpus().iter().map(|cpu| cpu.cpu_usage()).collect();
 
+    // Process
+    // for (pid, process) in sys.processes() {
+    //     println!(
+    //         "PID: {}, Name: {}, CPU Usage: {:.2}%, Memory: {} KB",
+    //         pid,
+    //         process.name().to_string_lossy(),
+    //         process.cpu_usage(),
+    //         process.memory()
+    //     );
+    // }
+    let process_details: Vec<(Pid, String, f32, u64)> = sys
+        .processes()
+        .iter()
+        .map(|(pid, process)| {
+            (
+                *pid,
+                process.name().to_string_lossy().to_string(),
+                process.cpu_usage(),
+                process.memory(),
+            )
+        })
+        .collect();
+
     if let Ok(mut widgets) = main_window.lock() {
         widgets.memory_usage = memory_usage;
         widgets.cpu_usage = cpu_usages;
+        widgets.process = process_details;
     }
 }
 

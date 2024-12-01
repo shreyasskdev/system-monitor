@@ -17,7 +17,10 @@ impl MemoryLayout {
         let separator = Separator::new(Orientation::Horizontal);
 
         // layout 1
-        let layout1 = Box::builder().orientation(Orientation::Horizontal).build();
+        let layout1 = Box::builder()
+            .orientation(Orientation::Horizontal)
+            .spacing(10)
+            .build();
         let label_memory_usage_placeholder = Label::new(Some("Memory usage")); // Memory usage
         let progress = &monitor_widget.memory_progress; // Progress
         progress.set_hexpand(true);

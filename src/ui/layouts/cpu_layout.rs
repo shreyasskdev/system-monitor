@@ -9,6 +9,7 @@ impl CpuLayout {
     pub fn new(monitor_widget: &MonitorWidgets) -> Self {
         let widget = Grid::new();
         widget.set_hexpand(true);
+        widget.set_column_spacing(5);
         widget.set_css_classes(&["box"]);
 
         // heading
@@ -30,7 +31,7 @@ impl CpuLayout {
             .iter()
             .enumerate()
             .for_each(|(index, progress_bar)| {
-                let label = format!("CPU {}", index + 1);
+                let label = format!("Core {}", index + 1);
                 progress_bar.set_hexpand(true);
 
                 let label_widget = Label::new(Some(&label));
